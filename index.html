@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpēļuIzvēle — atrodi savu galda spēli</title>
+<style>
+:root{--ink:#182235;--muted:#637083;--yellow:#ffd34f;--paper:#faf8f3;--line:#e2e4e7;--nav:#111827;--green:#eaf3e9;--purple:#eee4f8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:var(--nav);color:white;padding:15px max(24px,calc((100% - 1180px)/2));display:flex;align-items:center;gap:28px;position:sticky;top:0;z-index:5}
+.logo{font-size:23px;font-weight:850;white-space:nowrap}.logo span{color:var(--yellow)}.tagline{font-size:13px;color:#d6dbe4;flex:1}nav{display:flex;gap:24px}nav a{color:#f7f7fa;text-decoration:none;font-size:14px}nav a:hover{color:var(--yellow)}
+.hero{color:white;background:linear-gradient(90deg,rgba(13,17,22,.95),rgba(13,17,22,.75) 45%,rgba(13,17,22,.2)),radial-gradient(ellipse at 78% 45%,#80603c,#33261c 45%,#111827);min-height:390px;padding:54px max(24px,calc((100% - 1180px)/2)) 30px;position:relative;overflow:hidden}
+.hero:after{content:"🎲  🃏  🎯  🎲";position:absolute;right:4%;top:32%;font-size:clamp(36px,5vw,70px);letter-spacing:10px;opacity:.9;transform:rotate(-8deg);max-width:42%;line-height:1.8}
+.hero-copy{max-width:570px;position:relative;z-index:1}.eyebrow{text-transform:uppercase;letter-spacing:2px;color:var(--yellow);font-size:12px;font-weight:800}.hero h1{font-size:clamp(42px,5vw,66px);line-height:1.02;letter-spacing:-2px;margin:14px 0}.hero h1 span{color:var(--yellow)}.hero p{line-height:1.7;color:#e5e7eb;max-width:510px}.button{border:0;border-radius:999px;padding:14px 24px;background:var(--yellow);font-weight:800;font-size:15px;cursor:pointer;color:#182235;transition:.15s}.button:hover{transform:translateY(-1px);filter:brightness(.97)}.button.secondary{background:#eceef0}.hero .button{margin-top:12px;min-width:170px}.hero-points{display:flex;gap:30px;margin-top:32px;flex-wrap:wrap;font-size:13px;color:#e5e7eb}.hero-points b{color:white;display:block;margin-bottom:3px}
+main{max-width:1180px;margin:28px auto;padding:0 22px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:24px}.progress-row{display:flex;align-items:center;gap:12px;margin:3px 0 18px;font-size:13px;font-weight:750}.progress{height:12px;background:#e4e5e6;border-radius:99px;flex:1;overflow:hidden}.progress>div{height:100%;width:0;background:var(--yellow);border-radius:99px;transition:width .25s}
+.panel{background:white;border:1px solid #ececef;border-radius:18px;padding:30px;box-shadow:0 8px 28px #1d29390a}.question-top{display:flex;gap:18px;align-items:center;margin-bottom:24px}.q-icon{width:68px;height:68px;flex:none;border-radius:50%;background:#fff0c6;display:grid;place-items:center;font-size:30px}.question-top h2{font-size:23px;margin:0 0 7px;line-height:1.25}.question-top p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+.options{display:grid;gap:9px}.option{display:flex;align-items:center;gap:13px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;cursor:pointer;transition:.15s;min-height:49px}.option:hover{border-color:#e8bd36;background:#fffdf5}.option.selected{border-color:#d9a900;background:#fff6d7;box-shadow:0 0 0 1px #d9a900}.radio{width:20px;height:20px;border:2px solid #b9bec5;border-radius:50%;flex:none;display:grid;place-items:center}.selected .radio{border-color:#b58a00}.selected .radio:after{content:"";width:10px;height:10px;background:#b58a00;border-radius:50%}.option span:last-child{font-size:14px}
+.controls{display:flex;justify-content:space-between;gap:12px;margin-top:24px}.controls .button{min-width:118px}.button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+aside{display:grid;align-content:start;gap:18px}.side-card{border-radius:18px;padding:22px;background:#fff0c8}.side-card h3{margin:0 0 16px;font-size:19px}.rank{display:flex;align-items:center;gap:12px;margin:10px 0;font-size:14px}.rank b{display:grid;place-items:center;width:31px;height:31px;border-radius:50%;background:var(--yellow)}.side-card.purple{background:var(--purple)}.side-card p{font-size:14px;line-height:1.6;margin:0}.side-card a{display:inline-block;margin-top:12px;color:inherit;font-size:14px;text-decoration:none;font-weight:700}.features{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:24px 0 45px;background:var(--green);padding:22px;border-radius:18px}.feature{display:flex;gap:13px;padding:4px 8px}.feature:not(:last-child){border-right:1px solid #d6e1d5}.feature .emoji{font-size:28px}.feature b{font-size:14px}.feature p{font-size:12px;line-height:1.5;color:var(--muted);margin-bottom:0}
+.result{display:none}.result.show{display:block}.result-badge{display:inline-block;background:#eaf3e9;color:#2c6537;border-radius:99px;padding:7px 12px;font-weight:750;font-size:12px}.result h2{font-size:30px;margin:14px 0}.game-emoji{font-size:55px}.result p{line-height:1.65;color:#4c596b}.chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.chip{background:#f0f1f3;padding:7px 10px;border-radius:99px;font-size:12px}.match-list{display:grid;gap:10px;margin-top:22px}.match{border:1px solid var(--line);border-radius:13px;padding:14px;display:flex;justify-content:space-between;gap:14px;align-items:center}.match b{display:block;margin-bottom:4px}.match small{color:var(--muted)}.match .score{font-weight:800;background:#fff0c8;border-radius:99px;padding:7px 10px;white-space:nowrap}.fineprint{font-size:12px;color:var(--muted);margin-top:18px}
+footer{text-align:center;padding:28px 20px;color:#6b7280;font-size:12px}
+@media(max-width:850px){header{flex-wrap:wrap;gap:12px}.tagline{display:none}nav{gap:14px;overflow:auto}nav a{white-space:nowrap}.hero:after{opacity:.25;right:-7%;top:44%}.layout{grid-template-columns:1fr}aside{grid-template-columns:repeat(2,minmax(0,1fr))}.features{grid-template-columns:1fr}.feature:not(:last-child){border-right:0;border-bottom:1px solid #d6e1d5;padding-bottom:16px}}
+@media(max-width:520px){header{padding:14px 18px}.logo{font-size:20px}nav{width:100%;justify-content:space-between}nav a{font-size:12px}.hero{padding:38px 20px 26px;min-height:380px}.hero h1{font-size:43px}.hero:after{top:65%;right:-4%;font-size:32px;max-width:55%}main{padding:0 13px;margin-top:18px}.panel{padding:19px}.question-top{align-items:flex-start;gap:12px}.q-icon{width:48px;height:48px;font-size:22px}.question-top h2{font-size:19px}.controls .button{min-width:0;padding:12px 16px}.side-card{padding:17px}.aside{grid-template-columns:1fr}.match{align-items:flex-start}.match .score{font-size:12px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">🎲 Spēļu<span>Izvēle</span></div>
+  <div class="tagline">Atrodi savu ideālo galda spēli</div>
+  <nav><a href="#sakums">Sākums</a><a href="#tests">Tests</a><a href="#popularas">Populārākās spēles</a><a href="#par-mums">Par mums</a></nav>
+</header>
+<section class="hero" id="sakums">
+  <div class="hero-copy">
+    <div class="eyebrow">Tavs nākamais spēļu vakars sākas šeit</div>
+    <h1>Kāda galda spēle<br><span>der tev?</span></h1>
+    <p>Aizpildi īsu testu un uzzini, kura galda spēle vislabāk atbilst tavām interesēm, draugu lokam un noskaņojumam.</p>
+    <button class="button" onclick="startQuiz()">Sākt testu&nbsp; →</button>
+    <div class="hero-points">
+      <div>◷ <b>Ātri un vienkārši</b>Aptuveni 2–3 minūtes</div>
+      <div>☆ <b>Personalizēts rezultāts</b>Balstīts tavās atbildēs</div>
+      <div>♧ <b>Piemērots visiem</b>Draugiem, ģimenei un pārim</div>
+    </div>
+  </div>
+</section>
+<main id="tests">
+<div class="layout">
+  <section>
+    <div class="progress-row"><span id="counter">1 / 10</span><div class="progress"><div id="progressFill"></div></div></div>
+    <div class="panel" id="quizPanel">
+      <div class="question-top"><div class="q-icon" id="qIcon">👥</div><div><h2 id="qTitle">Cik cilvēku parasti spēlē kopā?</h2><p id="qDesc">Izvēlies to, kas visbiežāk atbilst tavam draugu lokam vai ģimenei.</p></div></div>
+      <div class="options" id="options"></div>
+      <div class="controls"><button class="button secondary" id="backBtn" onclick="previousQuestion()">← Atpakaļ</button><button class="button" id="nextBtn" onclick="nextQuestion()">Tālāk&nbsp; →</button></div>
+    </div>
+    <div class="panel result" id="resultPanel" aria-live="polite"></div>
+  </section>
+  <aside>
+    <div class="side-card" id="popularas">
+      <h3>Populāras galda spēles</h3>
+      <div class="rank"><b>1</b><span>Catan</span></div><div class="rank"><b>2</b><span>Dixit</span></div><div class="rank"><b>3</b><span>Ticket to Ride</span></div><div class="rank"><b>4</b><span>Carcassonne</span></div><div class="rank"><b>5</b><span>UNO</span></div>
+      <a href="#tests" onclick="startQuiz()">Atrodi savu spēli&nbsp; →</a>
+    </div>
+    <div class="side-card purple"><h3>💡 Vai zināji?</h3><p>Galda spēles ir lielisks veids, kā pavadīt laiku kopā, trenēt stratēģisko domāšanu un radīt jautras atmiņas.</p></div>
+  </aside>
+</div>
+<div class="features" id="par-mums">
+  <div class="feature"><div class="emoji">🎮</div><div><b>Dažādi spēļu veidi</b><p>No ātrām ballīšu spēlēm līdz dziļām stratēģijām.</p></div></div>
+  <div class="feature"><div class="emoji">☆</div><div><b>Aktuālas izvēles</b><p>Populāras, iecienītas un dažādiem gadījumiem piemērotas spēles.</p></div></div>
+  <div class="feature"><div class="emoji">♡</div><div><b>Tava ideālā spēle</b><p>Atbildi uz jautājumiem un saņem ieteikumu, kas atbilst tavai gaumei.</p></div></div>
+</div>
+</main>
+<footer>SpēļuIzvēle · Atrodi spēli savam nākamajam spēļu vakaram</footer>
+<script>
+const questions = [
+ {icon:"👥",title:"Cik cilvēku parasti spēlē kopā?",desc:"Izvēlies to, kas visbiežāk atbilst tavam draugu lokam vai ģimenei.",opts:["2 cilvēki (pāris, draugs)","3–4 cilvēki","5–6 cilvēki","7+ cilvēki","Nav svarīgi / varu spēlēt arī vienatnē"],key:["two","small","small","party","any"]},
+ {icon:"🎂",title:"Kāds ir spēlētāju vecums?",desc:"Padomā par jaunāko cilvēku, kurš parasti piedalīsies.",opts:["Bērni (līdz 8 gadiem)","Ģimene ar bērniem (8–12 gadi)","Pusaudži (13–17 gadi)","Pieaugušie (18+)","Dažādi vecumi kopā"],key:["kids","family","teens","adults","mixed"]},
+ {icon:"⏱️",title:"Cik ilgi gribat spēlēt?",desc:"Cik ilgu laiku vēlaties atvēlēt vienai spēlei?",opts:["Līdz 15 minūtēm","15–30 minūtes","30–60 minūtes","Vairāk nekā stundu","Atkarīgs no vakara"],key:["short","medium","medium","long","any"]},
+ {icon:"🧠",title:"Cik sarežģītu spēli vēlies?",desc:"Nav pareizas atbildes — izvēlies sev ērtāko līmeni.",opts:["Ļoti vienkāršu, lai var sākt uzreiz","Vieglu, bet ar interesantiem lēmumiem","Vidēji sarežģītu stratēģiju","Sarežģītu, kur jāplāno vairākus gājienus uz priekšu"],key:["easy","light","medium","hard"]},
+ {icon:"😂",title:"Kāda atmosfēra patīk visvairāk?",desc:"Kādu noskaņojumu gribi radīt pie galda?",opts:["Smiekli, joki un haoss","Mierīga, radoša un iztēles pilna","Draudzīga sacensība","Intensīva stratēģija un izaicinājums","Sadarbība — visi pret spēli"],key:["fun","creative","competitive","strategy","coop"]},
+ {icon:"🎯",title:"Ko tev visvairāk patīk darīt spēlē?",desc:"Izvēlies galveno motivāciju.",opts:["Blefot, minēt un pārliecināt citus","Veidot, vākt resursus vai tirgoties","Atklāt stāstus, asociācijas un attēlus","Plānot maršrutus vai izvietot objektus","Pildīt uzdevumus komandā"],key:["bluff","build","creative","routes","coop"]},
+ {icon:"🎨",title:"Kādas spēles tēma tevi uzrunā?",desc:"Izvēlies tēmu, kas šķiet saistošākā.",opts:["Fantāzija, piedzīvojumi vai maģija","Pilsētas, ceļojumi un pasaules veidošana","Noslēpumi, noziegumi un dedukcija","Ikdienas humors un popkultūra","Daba, dzīvnieki vai skaisti attēli","Tēma nav svarīga"],key:["fantasy","routes","deduction","fun","creative","any"]},
+ {icon:"💶",title:"Kāds ir aptuvenais budžets?",desc:"Ja spēli vēl tikai plāno iegādāties, cik gribi tērēt?",opts:["Līdz 15 €","15–30 €","30–50 €","Vairāk par 50 €","Spēle jau ir / budžets nav svarīgs"],key:["budget","mid","premium","premium","any"]},
+ {icon:"🃏",title:"Kāds spēles formāts visvairāk patīk?",desc:"Izvēlies to, ko labprāt redzētu uz galda.",opts:["Kārtis un neliela kastīte","Figūriņas, laukums un resursi","Attēli, vārdi un asociācijas","Slēptas lomas un slepeni mērķi","Man nav noteiktas izvēles"],key:["compact","build","creative","bluff","any"]},
+ {icon:"✨",title:"Kas būtu ideāls spēles vakara iznākums?",desc:"Izvēlies, kas tev liktu teikt: “Šis bija lieliski!”",opts:["Visi daudz smējās un iesaistījās","Es uzvarēju ar gudru plānu","Mēs kopā atrisinājām sarežģītu uzdevumu","Radās interesanti stāsti un pārsteidzošas idejas","Gribam uzreiz spēlēt vēlreiz"],key:["fun","strategy","coop","creative","replay"]}
+];
+const games = [
+ {name:"Codenames",emoji:"🕵️",players:"4–8+",time:"15–30 min",price:"€",tags:["party","social","creative","easy","medium","teens","adults","mixed"],desc:"Komandu vārdu asociāciju spēle, kur jāatrod savas komandas aģenti, sekojot viena vārda pavedieniem."},
+ {name:"Dixit",emoji:"🖼️",players:"3–8",time:"30 min",price:"€€",tags:["creative","fun","easy","family","kids","teens","adults","mixed","social"],desc:"Iztēles un asociāciju spēle ar sapņainām ilustrācijām — katrs pavediens var tikt saprasts citādi."},
+ {name:"Catan",emoji:"🏝️",players:"3–4 (paplašināms)",time:"60–90 min",price:"€€€",tags:["build","strategy","balanced","competitive","medium","long","adults","teens","family","replay"],desc:"Vāc resursus, tirgojies un attīsti apmetnes, sacenšoties par salas kontroli."},
+ {name:"Ticket to Ride",emoji:"🚂",players:"2–5",time:"30–60 min",price:"€€€",tags:["routes","build","balanced","light","medium","family","mixed","replay","competitive"],desc:"Savieno pilsētas ar vilcienu maršrutiem un gudri plāno savus ceļus."},
+ {name:"Carcassonne",emoji:"🏰",players:"2–5",time:"30–45 min",price:"€€",tags:["build","strategy","balanced","light","medium","family","mixed","replay","quiet"],desc:"Veido viduslaiku ainavu, liekot flīzes un izvietojot sekotājus pilsētās, ceļos un laukos."},
+ {name:"UNO",emoji:"🃏",players:"2–10",time:"15–30 min",price:"€",tags:["compact","short","easy","fun","luck","party","family","kids","mixed","replay","social"],desc:"Ātra un viegli apgūstama kāršu spēle, kur jāatbrīvojas no kārtīm un īstajā brīdī jāmaina spēles gaita."},
+ {name:"Exploding Kittens",emoji:"🐱",players:"2–5",time:"15 min",price:"€€",tags:["compact","short","easy","fun","luck","party","teens","adults","replay","social"],desc:"Haotiska kāršu spēle ar riskiem, pārsteigumiem un kaķu humoru."},
+ {name:"The Resistance: Avalon",emoji:"🛡️",players:"5–10",time:"30 min",price:"€€",tags:["bluff","social","party","deduction","teens","adults","replay","fun"],desc:"Slēptu lomu un dedukcijas spēle, kur jāatklāj, kam var uzticēties."},
+ {name:"7 Wonders",emoji:"🏛️",players:"3–7",time:"30 min",price:"€€€",tags:["strategy","build","balanced","medium","replay","adults","teens","competitive"],desc:"Attīsti seno civilizāciju, izvēloties kārtis un līdzsvarojot zinātni, tirdzniecību un militāro spēku."},
+ {name:"Pandemic",emoji:"🧬",players:"2–4",time:"45 min",price:"€€€",tags:["coop","campaign","strategy","medium","long","adults","teens","family","replay"],desc:"Sadarbojieties kā komanda, lai ierobežotu slimību izplatību un atrastu ārstēšanas veidus."},
+ {name:"Azul",emoji:"🔷",players:"2–4",time:"30–45 min",price:"€€€",tags:["creative","strategy","quiet","balanced","medium","family","mixed","replay"],desc:"Veido krāsainas flīžu mozaīkas un centies iegūt punktus, rūpīgi plānojot izvietojumu."},
+ {name:"Wingspan",emoji:"🐦",players:"1–5",time:"40–70 min",price:"€€€",tags:["creative","strategy","quiet","build","long","adults","replay","balanced"],desc:"Veido putnu rezervātu, kombinē spējas un krāj punktus skaisti noformētā dabas tematikas spēlē."},
+ {name:"Just One",emoji:"💡",players:"3–7",time:"20 min",price:"€€",tags:["coop","social","creative","easy","party","family","mixed","short"],desc:"Sadarbības vārdu minēšanas spēle, kur līdzīgie pavedieni tiek izņemti — jādomā radoši!"}
+];
+const answers={};let current=0;
+function startQuiz(){document.getElementById('tests').scrollIntoView({behavior:'smooth'});renderQuestion();}
+function renderQuestion(){
+ const q=questions[current];document.getElementById('quizPanel').style.display='block';document.getElementById('resultPanel').classList.remove('show');
+ document.getElementById('counter').textContent=(current+1)+' / '+questions.length;
+ document.getElementById('progressFill').style.width=((current+1)/questions.length*100)+'%';
+ document.getElementById('qIcon').textContent=q.icon;document.getElementById('qTitle').textContent=(current+1)+'. '+q.title;document.getElementById('qDesc').textContent=q.desc;
+ const box=document.getElementById('options');box.innerHTML='';
+ q.opts.forEach((label,i)=>{const el=document.createElement('div');el.className='option'+(answers[current]===i?' selected':'');el.tabIndex=0;el.setAttribute('role','button');el.setAttribute('aria-pressed',answers[current]===i?'true':'false');el.innerHTML='<span class="radio"></span><span></span>';el.children[1].textContent=label;el.onclick=()=>{answers[current]=i;renderQuestion();};el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();answers[current]=i;renderQuestion();}};box.appendChild(el);});
+ document.getElementById('backBtn').disabled=current===0;document.getElementById('nextBtn').textContent=current===questions.length-1?'Rādīt rezultātu →':'Tālāk →';
+}
+function nextQuestion(){if(answers[current]===undefined){alert('Lūdzu, izvēlies vienu atbildi, lai turpinātu.');return;}if(current<questions.length-1){current++;renderQuestion();}else showResults();}
+function previousQuestion(){if(current>0){current--;renderQuestion();}}
+function calculateScores(){
+ const a={};questions.forEach((q,i)=>{if(answers[i]!==undefined)a[i]=q.key[answers[i]];});
+ return games.map(g=>{let score=0;const tags=g.tags;
+ const add=(idx,weight=2)=>{if(a[idx]&&tags.includes(a[idx]))score+=weight;};
+ // Ten selected questions: players, age, duration, complexity, mood, activity, theme, budget, format and ideal outcome.
+ add(0,3);add(1,2);add(2,2);add(3,3);add(4,3);add(5,3);add(6,2);add(7,2);add(8,3);add(9,3);
+ // Cross-question compatibility bonuses for practical constraints.
+ if(a[0]==='two'&&/2/.test(g.players))score+=2;
+ if(a[0]==='party'&&(/[5-9]|10/.test(g.players)||g.tags.includes('party')))score+=3;
+ if(a[2]==='short'&&g.time.includes('15'))score+=3;
+ if(a[3]==='hard'&&g.tags.includes('strategy'))score+=2;
+ if(a[4]==='coop'&&g.tags.includes('coop'))score+=4;
+ if(a[7]==='budget'&&g.price==='€')score+=3;
+ return {...g,score};
+ }).sort((x,y)=>y.score-x.score);
+}
+function showResults(){
+ const ranked=calculateScores();const best=ranked[0];document.getElementById('quizPanel').style.display='none';
+ const panel=document.getElementById('resultPanel');panel.classList.add('show');
+ panel.innerHTML=`<span class="result-badge">TAVS IETEIKUMS</span><div class="game-emoji">${best.emoji}</div><h2>${best.name}</h2><p>${best.desc}</p><div class="chips"><span class="chip">👥 ${best.players} spēlētāji</span><span class="chip">⏱️ ${best.time}</span><span class="chip">💶 Aptuvenā cenu grupa: ${best.price}</span></div><p>Šī spēle ieguva visaugstāko atbilstības punktu skaitu, salīdzinot tavas atbildes ar spēļu īpašībām.</p><h3>Citas spēles, kas varētu patikt</h3><div class="match-list">${ranked.slice(1,4).map(g=>`<div class="match"><div><b>${g.emoji} ${g.name}</b><small>${g.players} spēlētāji · ${g.time}</small></div><span class="score">${Math.round(g.score/Math.max(1,best.score)*100)}% atbilstība</span></div>`).join('')}</div><p class="fineprint">Ieteikumi ir orientējoši. Spēlētāju skaits, ilgums un cena var atšķirties atkarībā no izdevuma, paplašinājumiem un veikala.</p><div class="controls"><button class="button secondary" onclick="restartQuiz()">↻ Sākt no jauna</button><button class="button" onclick="window.print()">Saglabāt rezultātu</button></div>`;
+ document.getElementById('counter').textContent='Gatavs!';document.getElementById('progressFill').style.width='100%';panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function restartQuiz(){for(const k in answers)delete answers[k];current=0;renderQuestion();document.getElementById('tests').scrollIntoView({behavior:'smooth'});}
+renderQuestion();
+</script>
+</body>
+</html>
